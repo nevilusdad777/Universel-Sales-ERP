@@ -334,6 +334,17 @@ const Quotations = () => {
     }
   };
 
+  const handleSendQuotation = async (id) => {
+    try {
+      const res = await api.post(`/quotations/${id}/send`);
+      addToast('Quotation marked as SENT to customer!', 'success');
+      setSelectedQuotation(res.data);
+      fetchQuotations();
+    } catch (err) {
+      addToast(err.response?.data?.message || 'Failed to send quotation', 'error');
+    }
+  };
+
   // Filter list
   const filteredQuotations = quotations.filter(q => {
     const matchesSearch = !search || 
@@ -477,8 +488,17 @@ const Quotations = () => {
                   </p>
                 </div>
 
-                {/* Approve Action */}
+                {/* Actions */}
                 <div className="flex gap-2 mt-2 sm:mt-0">
+                  {selectedQuotation.status === 'DRAFT' && (
+                    <button
+                      onClick={() => handleSendQuotation(selectedQuotation.id)}
+                      className="h-10 px-4 bg-[#2563eb] hover:bg-[#1d4ed8] text-white font-medium text-sm rounded transition-colors shadow-sm flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined" style={{ fontSize: 18 }}>send</span>
+                      Send to Customer
+                    </button>
+                  )}
                   {canApprove && selectedQuotation.status !== 'APPROVED' && selectedQuotation.status !== 'EXPIRED' && selectedQuotation.status !== 'REJECTED' && (
                     <button
                       onClick={() => handleApproveQuotation(selectedQuotation.id)}

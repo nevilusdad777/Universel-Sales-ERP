@@ -197,3 +197,25 @@ exports.approveQuotation = async (req, res) => {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
+
+exports.sendQuotation = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const quotation = await prisma.quotation.findUnique({ where: { id } });
+    if (!quotation) return res.status(404).json({ message: 'Quotation not found' });
+
+    if (quotation.status !== 'DRAFT') {
+      return res.status(400).json({ message: `Quotation is already ${quotation.status}` });
+    }
+
+    const updated = await prisma.quotation.update({
+      where: { id },
+      data: { status: 'SENT' }
+    });
+
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+};
+

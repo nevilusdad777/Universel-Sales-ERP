@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getQuotations, getQuotationById, createQuotation, updateQuotation, deleteQuotation, approveQuotation } = require('../controllers/quotationController');
+const { getQuotations, getQuotationById, createQuotation, updateQuotation, deleteQuotation, approveQuotation, sendQuotation } = require('../controllers/quotationController');
 const { protect, authorize } = require('../middlewares/authMiddleware');
 
 router.use(protect);
@@ -11,5 +11,6 @@ router.post('/', createQuotation);
 router.put('/:id', updateQuotation);
 router.delete('/:id', authorize('SUPER_ADMIN', 'MANAGER'), deleteQuotation);
 router.post('/:id/approve', authorize('SUPER_ADMIN', 'MANAGER'), approveQuotation);
+router.post('/:id/send', sendQuotation);
 
 module.exports = router;
