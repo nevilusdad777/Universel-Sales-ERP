@@ -1,0 +1,219 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  MANAGER
+  SALES_EXECUTIVE
+}
+
+enum CustomerStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum QuotationStatus {
+  DRAFT
+  SENT
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  PACKED
+  DISPATCHED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMode {
+  CASH
+  UPI
+  BANK_TRANSFER
+  CHEQUE
+}
+
+model User {
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
+  password  String
+  role      Role
+  name      String
+  customers Customer[] // Customers assigned to Sales Executives
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Customer {
+  id                Int            @id @default(autoincrement())
+  name              String
+  companyName       String
+  gstNumber         String?
+  phoneNumber       String
+  email             String         @unique
+  address           String
+  city              String
+  state             String
+  pincode           String
+  customerType      String
+  creditLimit       Float          @default(0)
+  outstandingAmount Float          @default(0)
+  status            CustomerStatus @default(ACTIVE)
+  isDeleted         Boolean        @default(false)
+  
+  assignedToId      Int?
+  assignedTo        User?          @relation(fields: [assignedToId], references: [id])
+  
+  quotations        Quotation[]
+  orders            Order[]
+  
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  products  Product[]
+}
+
+model Product {
+  id             Int      @id @default(autoincrement())
+  name           String
+  sku            String   @unique
+  categoryId     Int
+  category       Category @relation(fields: [categoryId], references: [id])
+  hsnCode        String?
+  purchasePrice  Float
+  sellingPrice   Float
+  gstPercentage  Float
+  unit           String
+  currentStock   Int      @default(0)
+  minimumStock   Int      @default(0)
+  status         String   @default("ACTIVE")
+  
+  quotationItems QuotationItem[]
+  orderItems     OrderItem[]
+  stockTx        StockTransaction[]
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Quotation {
+  id             Int             @id @default(autoincrement())
+  quotationNo    String          @unique
+  customerId     Int
+  customer       Customer        @relation(fields: [customerId], references: [id])
+  validTill      DateTime
+  remarks        String?
+  status         QuotationStatus @default(DRAFT)
+  
+  subTotal       Float
+  discount       Float           @default(0)
+  gst            Float
+  grandTotal     Float
+  
+  items          QuotationItem[]
+  order          Order?
+  
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model QuotationItem {
+  id           Int       @id @default(autoincrement())
+  quotationId  Int
+  quotation    Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  productId    Int
+  product      Product   @relation(fields: [productId], references: [id])
+  quantity     Int
+  unitPrice    Float
+}
+
+model Order {
+  id              Int         @id @default(autoincrement())
+  orderNo         String      @unique
+  quotationId     Int         @unique
+  quotation       Quotation   @relation(fields: [quotationId], references: [id])
+  customerId      Int
+  customer        Customer    @relation(fields: [customerId], references: [id])
+  
+  deliveryDate    DateTime?
+  shippingAddress String
+  paymentStatus   String      @default("UNPAID")
+  status          OrderStatus @default(PENDING)
+  
+  subTotal        Float
+  discount        Float       @default(0)
+  gst             Float
+  grandTotal      Float
+  
+  items           OrderItem[]
+  invoice         Invoice?
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model OrderItem {
+  id           Int      @id @default(autoincrement())
+  orderId      Int
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId    Int
+  product      Product  @relation(fields: [productId], references: [id])
+  quantity     Int
+  unitPrice    Float
+}
+
+model Invoice {
+  id             Int       @id @default(autoincrement())
+  invoiceNo      String    @unique
+  orderId        Int       @unique
+  order          Order     @relation(fields: [orderId], references: [id])
+  invoiceDate    DateTime  @default(now())
+  dueDate        DateTime
+  
+  subTotal       Float
+  discount       Float     @default(0)
+  gst            Float
+  grandTotal     Float
+  
+  payments       Payment[]
+  
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Payment {
+  id             Int         @id @default(autoincrement())
+  invoiceId      Int
+  invoice        Invoice     @relation(fields: [invoiceId], references: [id])
+  amount         Float
+  paymentDate    DateTime    @default(now())
+  paymentMode    PaymentMode
+  transactionRef String?
+  remarks        String?
+  
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model StockTransaction {
+  id             Int      @id @default(autoincrement())
+  productId      Int
+  product        Product  @relation(fields: [productId], references: [id])
+  type           String   // IN, OUT
+  quantity       Int
+  remarks        String?
+  createdAt      DateTime @default(now())
+}
