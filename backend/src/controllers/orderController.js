@@ -4,7 +4,7 @@ const { formatMoneyFields } = require('../utils/money');
 exports.getOrders = async (req, res) => {
   try {
     const orders = await prisma.order.findMany({
-      include: { customer: true, items: true },
+      include: { customer: true, items: { include: { product: true } } },
       orderBy: { createdAt: 'desc' }
     });
     res.json(formatMoneyFields(orders));
@@ -32,7 +32,7 @@ exports.createOrder = async (req, res) => {
 
     const quotation = await prisma.quotation.findUnique({
       where: { id: parseInt(quotationId) },
-      include: { items: true, customer: true }
+      include: { items: { include: { product: true } }, customer: true }
     });
 
     if (!quotation) return res.status(404).json({ message: 'Quotation not found' });
@@ -65,6 +65,8 @@ exports.createOrder = async (req, res) => {
     // Prepare items and stock transactions
     const orderItemsData = quotation.items.map(item => ({
       productId: item.productId,
+      productName: item.product?.name || item.productName || `Product #${item.productId}`,
+      productSku: item.product?.sku || item.productSku || '',
       quantity: item.quantity,
       unitPrice: item.unitPrice
     }));
@@ -124,7 +126,7 @@ exports.cancelOrder = async (req, res) => {
     
     const order = await prisma.order.findUnique({
       where: { id },
-      include: { items: true }
+      include: { items: { include: { product: true } } }
     });
 
     if (!order) return res.status(404).json({ message: 'Order not found' });

@@ -73,6 +73,8 @@ exports.createQuotation = async (req, res) => {
 
       itemsData.push({
         productId: product.id,
+        productName: product.name,
+        productSku: product.sku,
         quantity: item.quantity,
         unitPrice: product.sellingPrice
       });
@@ -133,6 +135,8 @@ exports.updateQuotation = async (req, res) => {
 
         itemsData.push({
           productId: product.id,
+          productName: product.name,
+          productSku: product.sku,
           quantity: item.quantity,
           unitPrice: product.sellingPrice
         });

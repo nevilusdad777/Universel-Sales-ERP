@@ -559,8 +559,8 @@ const Quotations = () => {
                         {selectedQuotation.items?.map((item, idx) => (
                           <tr key={idx}>
                             <td className="py-3 px-4 font-medium text-[#191b23]">
-                              {item.product?.name || `Product #${item.productId}`}
-                              {item.product?.sku && <span className="text-xs font-mono text-[#737686] block">{item.product.sku}</span>}
+                              {item.product?.name || item.productName || `Product #${item.productId}`}
+                              {(item.product?.sku || item.productSku) && <span className="text-xs font-mono text-[#737686] block">{item.product?.sku || item.productSku}</span>}
                             </td>
                             <td className="py-3 px-4 text-center font-medium">{item.quantity}</td>
                             <td className="py-3 px-4 text-right font-mono">₹{item.unitPrice?.toFixed(2)}</td>

@@ -304,8 +304,8 @@ const OrderDetail = ({ order, onCancel, canCancel }) => {
                         <span className="material-symbols-outlined text-[16px]">inventory_2</span>
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-[#191b23]">{item.product?.name || `Product #${item.productId}`}</p>
-                        <p className="text-[11px] text-[#737686]">{item.product?.sku}</p>
+                        <p className="text-sm font-medium text-[#191b23]">{item.product?.name || item.productName || `Product #${item.productId}`}</p>
+                        <p className="text-[11px] text-[#737686]">{item.product?.sku || item.productSku || ''}</p>
                       </div>
                     </div>
                   </td>
