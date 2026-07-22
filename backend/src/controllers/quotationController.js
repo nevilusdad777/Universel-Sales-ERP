@@ -22,7 +22,7 @@ const checkAndExpireQuotation = async (quotation) => {
 exports.getQuotations = async (req, res) => {
   try {
     let quotations = await prisma.quotation.findMany({
-      include: { customer: true, items: true },
+      include: { customer: true, items: { include: { product: true } } },
       orderBy: { createdAt: 'desc' }
     });
 

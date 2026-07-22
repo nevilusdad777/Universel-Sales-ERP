@@ -4,7 +4,17 @@ const { formatMoneyFields } = require('../utils/money');
 exports.getInvoices = async (req, res) => {
   try {
     const invoices = await prisma.invoice.findMany({
-      include: { order: { include: { customer: true } }, payments: true },
+      include: {
+        order: {
+          include: {
+            customer: true,
+            items: {
+              include: { product: true }
+            }
+          }
+        },
+        payments: true
+      },
       orderBy: { createdAt: 'desc' }
     });
     res.json(formatMoneyFields(invoices));
