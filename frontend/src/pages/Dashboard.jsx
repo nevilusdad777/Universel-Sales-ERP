@@ -407,36 +407,6 @@ export const TopBar = () => {
           </div>
         </div>
 
-        {/* User Profile Menu */}
-        <div className="relative" ref={userRef}>
-          <button
-            onClick={() => setShowUserMenu(!showUserMenu)}
-            className="w-8 h-8 rounded-full bg-[#2563eb] text-white flex items-center justify-center text-sm font-bold border border-[#c3c6d7] ml-1 cursor-pointer hover:ring-2 hover:ring-[#004ac6]/30 transition-all"
-            title="User Profile"
-          >
-            {user?.name?.charAt(0)?.toUpperCase() || 'U'}
-          </button>
-
-          {showUserMenu && (
-            <div className="absolute right-0 top-12 w-56 bg-white border border-[#c3c6d7] rounded-xl shadow-xl z-50 p-2">
-              <div className="p-2.5 border-b border-[#e2e8f0] mb-1">
-                <p className="text-sm font-bold text-[#191b23] truncate">{user?.name}</p>
-                <p className="text-xs text-[#64748b] truncate">{user?.email}</p>
-                <span className="inline-block mt-1.5 px-2 py-0.5 bg-[#d5e0f8] text-[#004ac6] text-[10px] font-bold rounded uppercase">
-                  {ROLE_LABELS[user?.role]}
-                </span>
-              </div>
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[18px]">logout</span>
-                Logout
-              </button>
-            </div>
-          )}
-        </div>
-
       </div>
     </header>
   );
