@@ -24,15 +24,39 @@ exports.getDashboard = async (req, res) => {
       prisma.customer.count({ where: { ...customerFilter, status: 'ACTIVE' } }),
     ]);
 
-    // --- Product Stats (global — Sales Exec sees all products) ---
-    const [totalProducts, lowStockProducts] = await Promise.all([
-      prisma.product.count(),
-      prisma.product.count({ where: { currentStock: { lt: prisma.product.fields?.minimumStock ?? undefined } } }),
-    ]);
+    // --- Total & Collected Revenue across all non-cancelled orders ---
+    const allNonCancelledOrders = await prisma.order.findMany({
+      where: { ...orderFilter, status: { not: 'CANCELLED' } },
+      include: {
+        invoice: {
+          include: { payments: true }
+        }
+      }
+    });
 
-    // Use raw comparison since Prisma doesn't support column-to-column comparison natively
-    const allProducts = await prisma.product.findMany({ select: { currentStock: true, minimumStock: true } });
-    const lowStockCount = allProducts.filter(p => p.currentStock < p.minimumStock).length;
+    let totalRevenue = 0;
+    let collectedRevenue = 0;
+
+    allNonCancelledOrders.forEach(o => {
+      totalRevenue += o.grandTotal || 0;
+      if (o.invoice && o.invoice.payments) {
+        const paid = o.invoice.payments.reduce((sum, p) => sum + (p.amount || 0), 0);
+        collectedRevenue += paid;
+      }
+    });
+
+    totalRevenue = roundMoney(totalRevenue);
+    collectedRevenue = roundMoney(collectedRevenue);
+    const pendingRevenue = roundMoney(totalRevenue - collectedRevenue);
+
+    // --- Product Stats & Low Stock list ---
+    const allProducts = await prisma.product.findMany({
+      include: { category: true },
+      orderBy: { currentStock: 'asc' }
+    });
+    const lowStockItems = allProducts.filter(p => p.currentStock < p.minimumStock);
+    const lowStockCount = lowStockItems.length;
+    const totalProducts = allProducts.length;
 
     // --- Quotation Stats ---
     const quotationBase = isSalesExec ? { customerId: { in: assignedCustomerIds } } : {};
@@ -93,8 +117,17 @@ exports.getDashboard = async (req, res) => {
       products: { total: totalProducts, lowStock: lowStockCount },
       quotations: { total: totalQuotations, approved: approvedQuotations, pending: pendingQuotations },
       orders: { total: totalOrders, delivered: deliveredOrders },
+      metrics: {
+        totalRevenue,
+        collectedRevenue,
+        pendingRevenue,
+      },
+      inventory: {
+        lowStockCount,
+        lowStockItems,
+      },
       outstandingPayments,
-      monthlyRevenue,
+      monthlyRevenue: totalRevenue,
       topSellingProducts,
     });
   } catch (error) {
