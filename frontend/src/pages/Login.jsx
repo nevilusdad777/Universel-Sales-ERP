@@ -10,6 +10,24 @@ const Login = () => {
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm();
 
+  const [contactModalOpen, setContactModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: '', message: '' });
+
+  const handleContactAdmin = (type) => {
+    if (type === 'forgot') {
+      setModalContent({
+        title: 'Password Reset Request',
+        message: 'Password resets are managed directly by your organization’s Super Admin. Please contact your administrator or email admin@us-erp.com to reset your credentials.'
+      });
+    } else {
+      setModalContent({
+        title: 'Contact Administrator',
+        message: 'User account creation and access permissions are restricted. Please reach out to your IT Administrator or email admin@us-erp.com for new account setup.'
+      });
+    }
+    setContactModalOpen(true);
+  };
+
   const onSubmit = async (data) => {
     try {
       await login(data.email, data.password);
@@ -73,7 +91,13 @@ const Login = () => {
             <div className="flex flex-col gap-1">
               <div className="flex justify-between items-center">
                 <label className="text-sm font-medium text-[#191b23]" htmlFor="password">Password</label>
-                <a className="text-xs font-semibold tracking-wide text-[#004ac6] hover:text-[#0053db] transition-colors" href="#">Forgot password?</a>
+                <button
+                  type="button"
+                  onClick={() => handleContactAdmin('forgot')}
+                  className="text-xs font-semibold tracking-wide text-[#004ac6] hover:text-[#0053db] transition-colors"
+                >
+                  Forgot password?
+                </button>
               </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
@@ -130,12 +154,52 @@ const Login = () => {
           <div className="text-center pt-4 border-t border-[#e1e2ed]">
             <p className="text-sm text-[#434655]">
               Don't have an account?{' '}
-              <a className="text-sm font-medium text-[#004ac6] hover:text-[#0053db] transition-colors" href="#">
+              <button
+                type="button"
+                onClick={() => handleContactAdmin('contact')}
+                className="text-sm font-medium text-[#004ac6] hover:text-[#0053db] transition-colors"
+              >
                 Contact Administrator
-              </a>
+              </button>
             </p>
           </div>
         </div>
+
+        {/* Contact Admin Modal */}
+        {contactModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-fade-in">
+            <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 flex flex-col gap-4 border border-[#e1e2ed]">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-[#f3f3fe] flex items-center justify-center text-[#004ac6]">
+                  <span className="material-symbols-outlined">support_agent</span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-[#191b23]">{modalContent.title}</h3>
+                  <p className="text-xs text-[#737686]">Universal Sales ERP Support</p>
+                </div>
+              </div>
+              <p className="text-sm text-[#434655] leading-relaxed bg-[#f8f9fb] p-4 rounded-lg border border-[#e1e2ed]">
+                {modalContent.message}
+              </p>
+              <div className="flex justify-between items-center pt-2">
+                <a
+                  href="mailto:admin@us-erp.com"
+                  className="text-xs text-[#004ac6] hover:underline font-medium flex items-center gap-1"
+                >
+                  <span className="material-symbols-outlined text-[16px]">mail</span>
+                  Email admin@us-erp.com
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setContactModalOpen(false)}
+                  className="px-4 py-2 bg-[#004ac6] text-white text-sm font-medium rounded-lg hover:bg-[#0053db] transition-colors"
+                >
+                  Got it
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* System Status */}
         <div className="mt-6 flex items-center justify-center gap-2 text-sm text-[#434655]">
