@@ -1,4 +1,5 @@
 const prisma = require('../utils/prisma');
+const { formatMoneyFields } = require('../utils/money');
 
 exports.getProducts = async (req, res) => {
   try {
@@ -37,7 +38,7 @@ exports.getProducts = async (req, res) => {
     }));
 
     res.json({
-      data: productsWithLowStockFlag,
+      data: formatMoneyFields(productsWithLowStockFlag),
       pagination: {
         total,
         page,
@@ -77,7 +78,7 @@ exports.createProduct = async (req, res) => {
     const product = await prisma.product.create({
       data: req.body
     });
-    res.status(201).json(product);
+    res.status(201).json(formatMoneyFields(product));
   } catch (error) {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }

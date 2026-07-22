@@ -1,4 +1,5 @@
 const prisma = require('../utils/prisma');
+const { formatMoneyFields } = require('../utils/money');
 
 // Helper for Rule 8: Restrict query if user is Sales Executive
 const getAccessFilter = (user) => {
@@ -44,7 +45,7 @@ exports.getCustomers = async (req, res) => {
     ]);
 
     res.json({
-      data: customers,
+      data: formatMoneyFields(customers),
       pagination: { total, page, pages: Math.ceil(total / limit) }
     });
   } catch (error) {
@@ -78,7 +79,7 @@ exports.createCustomer = async (req, res) => {
     }
 
     const customer = await prisma.customer.create({ data });
-    res.status(201).json(customer);
+    res.status(201).json(formatMoneyFields(customer));
   } catch (error) {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }

@@ -1,4 +1,5 @@
 const prisma = require('../utils/prisma');
+const { formatMoneyFields } = require('../utils/money');
 
 exports.getOrders = async (req, res) => {
   try {
@@ -6,7 +7,7 @@ exports.getOrders = async (req, res) => {
       include: { customer: true, items: true },
       orderBy: { createdAt: 'desc' }
     });
-    res.json(orders);
+    res.json(formatMoneyFields(orders));
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });
   }
@@ -19,7 +20,7 @@ exports.getOrderById = async (req, res) => {
       include: { customer: true, items: { include: { product: true } } }
     });
     if (!order) return res.status(404).json({ message: 'Order not found' });
-    res.json(order);
+    res.json(formatMoneyFields(order));
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });
   }
@@ -111,7 +112,7 @@ exports.createOrder = async (req, res) => {
       return newOrder;
     });
 
-    res.status(201).json(order);
+    res.status(201).json(formatMoneyFields(order));
   } catch (error) {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
@@ -166,7 +167,7 @@ exports.cancelOrder = async (req, res) => {
       return updated;
     });
 
-    res.json(cancelledOrder);
+    res.json(formatMoneyFields(cancelledOrder));
   } catch (error) {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }

@@ -1,60 +1,59 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { ToastProvider } from './context/ToastContext';
+import Dashboard, { Sidebar, TopBar } from './pages/Dashboard';
+import Login from './pages/Login';
 import Customers from './pages/Customers';
 import Products from './pages/Products';
-import { Users, Package, LayoutDashboard, Settings } from 'lucide-react';
+import Quotations from './pages/Quotations';
+import SalesOrders from './pages/SalesOrders';
+import Invoices from './pages/Invoices';
+import Payments from './pages/Payments';
+import Inventory from './pages/Inventory';
 
-const Sidebar = () => {
-  const location = useLocation();
-  const navItems = [
-    { name: 'Dashboard', path: '/', icon: <LayoutDashboard className="w-5 h-5 mr-3" /> },
-    { name: 'Customers', path: '/customers', icon: <Users className="w-5 h-5 mr-3" /> },
-    { name: 'Products', path: '/products', icon: <Package className="w-5 h-5 mr-3" /> },
-    { name: 'Settings', path: '/settings', icon: <Settings className="w-5 h-5 mr-3" /> },
-  ];
+const ProtectedLayout = () => {
+  const { user, loading } = useAuth();
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#faf8ff]">
+        <div className="w-10 h-10 border-4 border-[#d5e0f8] border-t-[#2563eb] rounded-full animate-spin" />
+      </div>
+    );
+  }
+  if (!user) return <Navigate to="/login" replace />;
 
   return (
-    <div className="w-64 bg-gray-900 min-h-screen p-4 text-white">
-      <div className="text-xl font-bold mb-8 px-4 py-2">Universal Sales ERP</div>
-      <nav>
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
-          return (
-            <Link 
-              key={item.name} 
-              to={item.path}
-              className={`flex items-center px-4 py-3 mb-2 rounded-lg transition-colors ${isActive ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}
-            >
-              {item.icon}
-              {item.name}
-            </Link>
-          );
-        })}
-      </nav>
+    <div className="flex min-h-screen bg-[#faf8ff] font-body-md text-[#191b23] overflow-hidden">
+      <Sidebar />
+      <div className="flex-1 flex flex-col md:ml-[280px] w-full min-h-screen relative overflow-x-hidden">
+        <TopBar />
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/customers" element={<Customers />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/quotations" element={<Quotations />} />
+          <Route path="/orders" element={<SalesOrders />} />
+          <Route path="/invoices" element={<Invoices />} />
+          <Route path="/payments" element={<Payments />} />
+          <Route path="/inventory" element={<Inventory />} />
+        </Routes>
+      </div>
     </div>
   );
 };
 
-const DashboardPlaceholder = () => (
-  <div className="p-6">
-    <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
-    <p className="text-gray-500 mt-2">Welcome to Universal Sales ERP (Phase 1/2 complete).</p>
-  </div>
-);
-
 function App() {
   return (
     <BrowserRouter>
-      <div className="flex min-h-screen bg-gray-50">
-        <Sidebar />
-        <div className="flex-1 overflow-x-hidden">
+      <AuthProvider>
+        <ToastProvider>
           <Routes>
-            <Route path="/" element={<DashboardPlaceholder />} />
-            <Route path="/customers" element={<Customers />} />
-            <Route path="/products" element={<Products />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/*" element={<ProtectedLayout />} />
           </Routes>
-        </div>
-      </div>
+        </ToastProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

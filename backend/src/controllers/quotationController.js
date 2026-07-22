@@ -1,4 +1,5 @@
 const prisma = require('../utils/prisma');
+const { formatMoneyFields } = require('../utils/money');
 
 // Helper to check and expire quotation
 const checkAndExpireQuotation = async (quotation) => {
@@ -28,7 +29,7 @@ exports.getQuotations = async (req, res) => {
     // Rule 9: Dynamic expiry check
     quotations = await Promise.all(quotations.map(q => checkAndExpireQuotation(q)));
 
-    res.json(quotations);
+    res.json(formatMoneyFields(quotations));
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });
   }
@@ -45,7 +46,7 @@ exports.getQuotationById = async (req, res) => {
     // Rule 9
     quotation = await checkAndExpireQuotation(quotation);
 
-    res.json(quotation);
+    res.json(formatMoneyFields(quotation));
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });
   }

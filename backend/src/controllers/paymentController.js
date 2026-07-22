@@ -1,4 +1,5 @@
 const prisma = require('../utils/prisma');
+const { formatMoneyFields } = require('../utils/money');
 
 exports.getPayments = async (req, res) => {
   try {
@@ -6,7 +7,7 @@ exports.getPayments = async (req, res) => {
       include: { invoice: { include: { order: { include: { customer: true } } } } },
       orderBy: { createdAt: 'desc' }
     });
-    res.json(payments);
+    res.json(formatMoneyFields(payments));
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });
   }
@@ -74,11 +75,11 @@ exports.createPayment = async (req, res) => {
       return newPayment;
     });
 
-    res.status(201).json({
+    res.status(201).json(formatMoneyFields({
       payment,
       updatedPaymentStatus: newPaymentStatus,
       updatedBalanceRemaining: invoice.grandTotal - newTotalPaid
-    });
+    }));
   } catch (error) {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
