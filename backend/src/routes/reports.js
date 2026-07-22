@@ -8,6 +8,7 @@ router.use(authorize('SUPER_ADMIN', 'MANAGER'));
 
 router.get('/sales',       getSalesReport);
 router.get('/customers',   getCustomerReport);
+router.get('/customer',    getCustomerReport);
 router.get('/outstanding', getOutstandingReport);
 router.get('/inventory',   getInventoryReport);
 
