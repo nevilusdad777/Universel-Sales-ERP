@@ -275,14 +275,14 @@ const Products = () => {
       </Modal>
 
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
         <div>
-          <h1 className="text-[30px] font-semibold text-[#191b23] m-0 leading-tight">Products</h1>
+          <h1 className="text-2xl sm:text-[30px] font-semibold text-[#191b23] m-0 leading-tight">Products</h1>
           <p className="text-sm text-[#434655] mt-1 m-0">Manage your inventory, pricing, and product status.</p>
         </div>
         <button
           onClick={() => { setEditing(null); setModalOpen(true); }}
-          className="h-10 px-4 bg-[#004ac6] text-white rounded font-medium text-sm hover:bg-[#0053db] transition-colors shadow-sm flex items-center gap-1 cursor-pointer"
+          className="w-full sm:w-auto h-10 px-4 bg-[#004ac6] text-white rounded font-medium text-sm hover:bg-[#0053db] transition-colors shadow-sm flex items-center justify-center gap-1 cursor-pointer"
         >
           <span className="material-symbols-outlined" style={{ fontSize: 18 }}>add</span>
           Add Product

@@ -474,7 +474,7 @@ const Payments = () => {
               Recent Payments Log
             </h2>
 
-            <div className="flex items-center bg-white border border-[#c3c6d7] rounded-lg px-3 py-1.5 w-64 focus-within:border-[#004ac6] focus-within:ring-2 focus-within:ring-[#004ac6]/20 transition-all shadow-sm">
+            <div className="flex items-center bg-white border border-[#c3c6d7] rounded-lg px-3 py-1.5 w-full sm:w-64 focus-within:border-[#004ac6] focus-within:ring-2 focus-within:ring-[#004ac6]/20 transition-all shadow-sm">
               <span className="material-symbols-outlined text-[#737686] text-[16px] mr-2">
                 search
               </span>

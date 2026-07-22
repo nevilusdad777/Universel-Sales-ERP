@@ -228,7 +228,7 @@ const Inventory = () => {
         {canAdjustStock && (
           <button
             onClick={() => setAdjustModalOpen(true)}
-            className="h-10 px-4 bg-[#004ac6] text-white rounded font-medium text-sm hover:bg-[#0053db] transition-colors shadow-sm flex items-center gap-2 shrink-0 self-start md:self-auto cursor-pointer"
+            className="w-full md:w-auto h-10 px-4 bg-[#004ac6] text-white rounded font-medium text-sm hover:bg-[#0053db] transition-colors shadow-sm flex items-center justify-center gap-2 cursor-pointer"
           >
             <span className="material-symbols-outlined text-[18px]">swap_vert</span>
             Manual Stock Adjustment
@@ -237,7 +237,7 @@ const Inventory = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-[#cbd5e1] space-x-6">
+      <div className="flex border-b border-[#cbd5e1] gap-4 overflow-x-auto flex-nowrap">
         {[
           { key: 'stock', label: 'Current Stock', icon: 'warehouse' },
           { key: 'alerts', label: `Low Stock Alerts (${lowStockProducts.length})`, icon: 'warning', badge: lowStockProducts.length > 0 },

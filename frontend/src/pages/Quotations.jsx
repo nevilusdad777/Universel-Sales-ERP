@@ -374,14 +374,14 @@ const Quotations = () => {
       </Modal>
 
       {/* Page Header */}
-      <div className="flex justify-between items-end mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 gap-3">
         <div>
-          <h1 className="text-[30px] font-semibold text-[#191b23] leading-tight">Quotations</h1>
+          <h1 className="text-2xl sm:text-[30px] font-semibold text-[#191b23] leading-tight">Quotations</h1>
           <p className="text-sm text-[#434655] mt-1">Manage and track customer quotes.</p>
         </div>
         <button
           onClick={() => setModalOpen(true)}
-          className="h-10 px-4 bg-[#004ac6] text-white rounded font-medium text-sm hover:bg-[#0053db] transition-colors shadow-sm flex items-center gap-1 cursor-pointer"
+          className="w-full sm:w-auto h-10 px-4 bg-[#004ac6] text-white rounded font-medium text-sm hover:bg-[#0053db] transition-colors shadow-sm flex items-center justify-center gap-1 cursor-pointer"
         >
           <span className="material-symbols-outlined" style={{ fontSize: 18 }}>add</span>
           Create Quotation

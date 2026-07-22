@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
@@ -15,6 +15,8 @@ import Reports from './pages/Reports';
 
 const ProtectedLayout = () => {
   const { user, loading } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#faf8ff]">
@@ -26,19 +28,19 @@ const ProtectedLayout = () => {
 
   return (
     <div className="flex min-h-screen bg-[#faf8ff] font-body-md text-[#191b23] overflow-hidden">
-      <Sidebar />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col md:ml-[280px] w-full min-h-screen relative overflow-x-hidden">
-        <TopBar />
+        <TopBar onMenuClick={() => setSidebarOpen(true)} />
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/customers" element={<Customers />} />
-          <Route path="/products" element={<Products />} />
+          <Route path="/"           element={<Dashboard />} />
+          <Route path="/customers"  element={<Customers />} />
+          <Route path="/products"   element={<Products />} />
           <Route path="/quotations" element={<Quotations />} />
-          <Route path="/orders" element={<SalesOrders />} />
-          <Route path="/invoices" element={<Invoices />} />
-          <Route path="/payments" element={<Payments />} />
-          <Route path="/inventory" element={<Inventory />} />
-          <Route path="/reports" element={<Reports />} />
+          <Route path="/orders"     element={<SalesOrders />} />
+          <Route path="/invoices"   element={<Invoices />} />
+          <Route path="/payments"   element={<Payments />} />
+          <Route path="/inventory"  element={<Inventory />} />
+          <Route path="/reports"    element={<Reports />} />
         </Routes>
       </div>
     </div>
@@ -52,7 +54,7 @@ function App() {
         <ToastProvider>
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path="/*" element={<ProtectedLayout />} />
+            <Route path="/*"     element={<ProtectedLayout />} />
           </Routes>
         </ToastProvider>
       </AuthProvider>

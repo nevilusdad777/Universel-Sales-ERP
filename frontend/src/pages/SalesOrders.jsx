@@ -465,7 +465,7 @@ const SalesOrders = () => {
         </div>
         <button
           onClick={() => { fetchQuotations(); setShowCreateModal(true); }}
-          className="flex items-center gap-2 px-4 py-2 bg-[#004ac6] text-white rounded-lg text-sm font-medium hover:bg-[#2563eb] transition-all shadow-sm shadow-[#004ac6]/20 active:scale-95"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-[#004ac6] text-white rounded-lg text-sm font-medium hover:bg-[#2563eb] transition-all shadow-sm shadow-[#004ac6]/20 active:scale-95"
         >
           <span className="material-symbols-outlined text-[18px]">add</span>
           Create Order
@@ -473,8 +473,8 @@ const SalesOrders = () => {
       </div>
 
       {/* Status Filter Tabs */}
-      <div className="flex items-center gap-1 flex-wrap">
-        <div className="flex bg-white border border-[#c3c6d7] rounded-lg overflow-hidden shadow-sm flex-wrap">
+      <div className="flex items-center gap-1 overflow-x-auto pb-1">
+        <div className="flex bg-white border border-[#c3c6d7] rounded-lg overflow-hidden shadow-sm flex-nowrap flex-shrink-0">
           {FILTER_TABS.map((f, idx) => (
             <button
               key={f}
