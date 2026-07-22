@@ -14,6 +14,7 @@ const NAV_ITEMS = [
   { name: 'Invoices',    path: '/invoices',   icon: 'description' },
   { name: 'Payments',    path: '/payments',   icon: 'payments' },
   { name: 'Inventory',   path: '/inventory',  icon: 'warehouse' },
+  { name: 'Reports',     path: '/reports',    icon: 'bar_chart' },
 ];
 
 const ROLE_LABELS = {

@@ -11,6 +11,7 @@ import SalesOrders from './pages/SalesOrders';
 import Invoices from './pages/Invoices';
 import Payments from './pages/Payments';
 import Inventory from './pages/Inventory';
+import Reports from './pages/Reports';
 
 const ProtectedLayout = () => {
   const { user, loading } = useAuth();
@@ -37,6 +38,7 @@ const ProtectedLayout = () => {
           <Route path="/invoices" element={<Invoices />} />
           <Route path="/payments" element={<Payments />} />
           <Route path="/inventory" element={<Inventory />} />
+          <Route path="/reports" element={<Reports />} />
         </Routes>
       </div>
     </div>

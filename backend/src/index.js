@@ -11,6 +11,7 @@ const orderRoutes = require('./routes/orders');
 const invoiceRoutes = require('./routes/invoices');
 const paymentRoutes = require('./routes/payments');
 const inventoryRoutes = require('./routes/inventory');
+const reportRoutes    = require('./routes/reports');
 
 const cookieParser = require('cookie-parser');
 
@@ -45,6 +46,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/inventory', inventoryRoutes);
+app.use('/api/reports',   reportRoutes);
 
 app.get('/', (req, res) => {
   res.send('API is running...');
