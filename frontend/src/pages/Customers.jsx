@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import api from '../services/api';
 import { useToast } from '../context/ToastContext';
+import { useAuth } from '../context/AuthContext';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 
@@ -160,6 +161,8 @@ const CustomerForm = ({ defaultValues, onSubmit, isSubmitting, onCancel }) => {
 
 const Customers = () => {
   const { addToast } = useToast();
+  const { user } = useAuth();
+  const canDelete = user?.role === 'SUPER_ADMIN' || user?.role === 'MANAGER';
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -350,13 +353,15 @@ const Customers = () => {
                         >
                           <span className="material-symbols-outlined" style={{ fontSize: 18 }}>edit</span>
                         </button>
-                        <button
-                          onClick={() => setConfirm({ open: true, id: c.id })}
-                          className="p-1.5 text-[#434655] hover:text-[#ba1a1a] hover:bg-red-50 rounded transition-colors"
-                          title="Delete"
-                        >
-                          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>delete</span>
-                        </button>
+                        {canDelete && (
+                          <button
+                            onClick={() => setConfirm({ open: true, id: c.id })}
+                            className="p-1.5 text-[#434655] hover:text-[#ba1a1a] hover:bg-red-50 rounded transition-colors"
+                            title="Delete"
+                          >
+                            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>delete</span>
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
 import { useToast } from '../context/ToastContext';
+import { useAuth } from '../context/AuthContext';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 
@@ -219,7 +220,7 @@ const OrderDetail = ({ order, onCancel }) => {
             </div>
             <p className="text-sm text-[#545f73]">Placed on {fmtDate(order.createdAt)}</p>
           </div>
-          {order.status !== 'CANCELLED' && order.status !== 'DELIVERED' && (
+          {order.status !== 'CANCELLED' && order.status !== 'DELIVERED' && canCancel && (
             <button
               onClick={onCancel}
               className="px-4 py-2 border border-red-300 bg-red-50 text-red-700 rounded-lg text-sm font-medium hover:bg-red-100 transition-colors flex items-center gap-2 shadow-sm"
@@ -352,6 +353,8 @@ const OrderDetail = ({ order, onCancel }) => {
 
 const SalesOrders = () => {
   const { addToast } = useToast();
+  const { user } = useAuth();
+  const canCancel = user?.role === 'SUPER_ADMIN' || user?.role === 'MANAGER';
 
   const [orders, setOrders]             = useState([]);
   const [quotations, setQuotations]     = useState([]);

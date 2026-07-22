@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
 import { useToast } from '../context/ToastContext';
+import { useAuth } from '../context/AuthContext';
 import Modal from '../components/Modal';
 
 const STATUS_BADGES = {
@@ -269,6 +270,8 @@ const QuotationForm = ({ customers, products, onSubmit, isSubmitting, onCancel }
 
 const Quotations = () => {
   const { addToast } = useToast();
+  const { user } = useAuth();
+  const canApprove = user?.role === 'SUPER_ADMIN' || user?.role === 'MANAGER';
   const [quotations, setQuotations] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [products, setProducts] = useState([]);
@@ -476,7 +479,7 @@ const Quotations = () => {
 
                 {/* Approve Action */}
                 <div className="flex gap-2 mt-2 sm:mt-0">
-                  {selectedQuotation.status !== 'APPROVED' && selectedQuotation.status !== 'EXPIRED' && selectedQuotation.status !== 'REJECTED' && (
+                  {canApprove && selectedQuotation.status !== 'APPROVED' && selectedQuotation.status !== 'EXPIRED' && selectedQuotation.status !== 'REJECTED' && (
                     <button
                       onClick={() => handleApproveQuotation(selectedQuotation.id)}
                       disabled={isApproving}
