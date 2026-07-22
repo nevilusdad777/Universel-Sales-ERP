@@ -198,7 +198,7 @@ const StatusTimeline = ({ status }) => {
 
 // ─── Order Detail Panel ───────────────────────────────────────────────────────
 
-const OrderDetail = ({ order, onCancel }) => {
+const OrderDetail = ({ order, onCancel, canCancel }) => {
   const cfg = STATUS_CONFIG[order.status] || STATUS_CONFIG.PENDING;
   const cust = order.customer || {};
   const initials = (cust.companyName || cust.name || 'XX').slice(0, 2).toUpperCase();
@@ -582,6 +582,7 @@ const SalesOrders = () => {
               <OrderDetail
                 order={selectedOrder}
                 onCancel={() => setCancelTarget(selectedOrder)}
+                canCancel={canCancel}
               />
             ) : (
               <div className="h-full flex flex-col items-center justify-center text-[#737686] bg-white rounded-xl border border-[#e1e2ed] shadow-sm">
