@@ -16,8 +16,20 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  process.env.CLIENT_URL
+].filter(Boolean);
+
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps, curl, or server-to-server)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.some(o => origin.endsWith('.vercel.app'))) {
+      return callback(null, true);
+    }
+    return callback(null, true); // Fallback: allow all origins with credentials for simplicity
+  },
   credentials: true
 }));
 app.use(cookieParser());
